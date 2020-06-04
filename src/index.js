@@ -67,7 +67,7 @@ export default class ParallaxScroll extends Component {
     headerHeight: 45,
     renderHeader: null,
     isHeaderFixed: false,
-    onHeaderFixed: () => {},
+    onHeaderFixed: () => { },
     parallaxHeight: window.width * RATIO,
     backgroundScale: 3,
     useNativeDriver: false,
@@ -77,7 +77,7 @@ export default class ParallaxScroll extends Component {
     headerFixedTransformY: 0,
     headerBackgroundColor: 'rgba(0, 0, 0, 0)',
     contentContainerStyle: {},
-    onChangeHeaderVisibility: () => {},
+    onChangeHeaderVisibility: () => { },
     renderParallaxBackground: null,
     renderParallaxForeground: null,
     fadeOutParallaxForeground: false,
@@ -196,6 +196,13 @@ export default class ParallaxScroll extends Component {
   };
 
   _ref = ref => {
+    // Handle React Native 0.62 change.
+    // ref._component has been deprecated to get component reference.
+    if (typeof this.props.innerRef === 'function' && ref && !ref._component) {
+      this.props.innerRef(ref);
+    }
+
+    // Handle React Native < 0.62.
     if (typeof this.props.innerRef === 'function' && ref && ref._component) {
       this.props.innerRef(ref._component);
     }
@@ -275,21 +282,21 @@ export default class ParallaxScroll extends Component {
     const translateY = !height
       ? 1
       : this.scrollY.interpolate({
-          inputRange: [0, height],
-          outputRange: [0, -(height / parallaxForegroundScrollSpeed)],
-          extrapolateRight: 'extend',
-          extrapolateLeft: 'clamp'
-        });
+        inputRange: [0, height],
+        outputRange: [0, -(height / parallaxForegroundScrollSpeed)],
+        extrapolateRight: 'extend',
+        extrapolateLeft: 'clamp'
+      });
 
     const opacity =
       !fadeOutParallaxForeground || !height
         ? 1
         : this.scrollY.interpolate({
-            inputRange: [0, height],
-            outputRange: [1, 0],
-            extrapolateRight: 'extend',
-            extrapolateLeft: 'clamp'
-          });
+          inputRange: [0, height],
+          outputRange: [1, 0],
+          extrapolateRight: 'extend',
+          extrapolateLeft: 'clamp'
+        });
     /* eslint-disable indent */
 
     const wrapperStyle = {
